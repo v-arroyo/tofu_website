@@ -1,0 +1,73 @@
+# openstack
+
+brew install openstack
+
+openstack flavor / image list
+
+openstack server / project list
+
+openstack server start / stop / delete <id>
+
+
+# source openstack 
+
+. openrc.sh
+
+# verify credentials openstack user
+
+env | grep OS_
+
+# tofu
+
+# create directory
+
+mkdir tofu_website
+
+# initialize 
+
+tofu init
+
+# configure the openstack provider
+
+# providers.tf
+
+terraform {
+required_version = ">= 0.14.0"
+  required_providers {
+    openstack = {
+      source  = "terraform-provider-openstack/openstack"
+      version = "~> 1.53.0"
+    }
+  }
+}
+
+
+# initialize and apply
+
+tofu init
+
+tofu plan
+
+tofu apply
+
+# main.tf > instance
+
+resource "openstack_compute_instance_v2" "basic" {
+  name            = "basic"
+  flavor_id       = "3be7c73a-735a-4ee1-b8d4-83feb080109d"
+  image_id        = "1c543c70-98f4-43fb-88ad-5e82476e4087"
+  key_pair        = "my-ssh-key"
+  security_groups = ["default"]
+
+  metadata = {
+    this = "that"
+  }
+
+  network {
+    name = "Ext-Net"
+  }
+}
+
+tofu apply
+
+
